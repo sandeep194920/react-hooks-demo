@@ -65,3 +65,16 @@
    such useStates for different variables.
    So the conclusion is we better need to split our state into multiple useStates using single variables in each unless its very
    necessary that we have some use case to use objects like what we did previously where multiple things change together.
+
+6. The rule with useState or any use** hooks are that they can be used only at the root level and not inside of any loop of 
+   function. 
+
+   Not allowed examples:
+
+   if(something){
+       useState(); // Not allowed to use this way 
+   }
+
+   const submitHandler() {
+       useState(); // Not allowed to use this way 
+   }
