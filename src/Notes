@@ -1,1 +1,12 @@
 ** This gives a glimpse of our development flow
+
+1. Let's learn useState(). Before React 16.8, in any component if we had to use state and setState in a functional component
+   then we first had to convert that into a class based component and then use state and setState. Now from React version 16.8
+   we can use useState() method inside the function. We are using this now in IngredientForm.js. Note that anything starting 
+   with use can be used only inside a functional component and not in class based. Also, in class based if we use state then 
+   only a javascript object (and not any other type) can be assigned to the state, whereas anything including the object can 
+   be assigned to useState like variables, arrays, objects and so on.
+   useState() returns an array of two elements, the first one is the current state (or the updated state) and the second 
+   second element in the array is function that allows you to update your first element which is the actual state. 
+   We get errors if we do update any particular value out of many values in an object like how we do in setState. We'll see 
+   why this happens next.
