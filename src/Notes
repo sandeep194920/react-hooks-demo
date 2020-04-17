@@ -49,3 +49,10 @@
    the title, we can not be sure we will get the right current state. So this is also not recommended way of doing it. We can 
    instead use function to get access to most updated state and then use that. This is like prevState we used when we accessed 
    state within setState in class based component.
+
+4. inputState[0] is the actual state and inputState[1] is the function used for updating that state. It's confusing to use this 
+   kind of representation. Hence we can use the feature of ES6, Array Destructuring. This helps to pull elements out of array
+   and assign them to the elements mentioned of left hand side.
+
+   const [inputState,setInputState ] = useState({......})
+   Now inputState is the actual state and the setInputState is the function to update the inputState.
