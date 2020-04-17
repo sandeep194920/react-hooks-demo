@@ -43,3 +43,9 @@
 
   Even though this seems like a bad change there is a reason of flexibility here. So when updating state this way, we need to make
   sure we retain all the properties by just writing the left out properties.
+
+3. But this method of updating the state (using title:inputState[0].title) doesn't guarantee the state update is the latest one. 
+   Because react sometimes postpones the state update when lot of animations are going on. So when we use inputState[0] to update 
+   the title, we can not be sure we will get the right current state. So this is also not recommended way of doing it. We can 
+   instead use function to get access to most updated state and then use that. This is like prevState we used when we accessed 
+   state within setState in class based component.

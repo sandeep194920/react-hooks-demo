@@ -21,12 +21,13 @@ const IngredientForm = React.memo((props) => {
               type="text"
               id="title"
               value={inputState[0].title}
-              onChange={(event) =>
-                inputState[1]({
-                  title: event.target.value,
-                  amount: inputState[0].amount, // This is because, like setState this wont merge the amount automatically into state
-                })
-              }
+              onChange={(event) => {
+                const newInput = event.target.value;
+                inputState[1]((prevInputState) => ({
+                  title: newInput, // event is not accessible here as we use prevInputState (due to the behavior of closure in javascript) hence we declare this way using event above
+                  amount: prevInputState.amount, // This is because, like setState this wont merge the amount automatically into state
+                }));
+              }}
             />
           </div>
           <div className="form-control">
@@ -35,12 +36,13 @@ const IngredientForm = React.memo((props) => {
               type="number"
               id="amount"
               value={inputState[0].amount}
-              onChange={(event) =>
-                inputState[1]({
-                  amount: event.target.value,
-                  title: inputState[0].title, // This is because, like setState this wont merge the title automatically into state
-                })
-              }
+              onChange={(event) => {
+                const newTitle = event.target.value;
+                inputState[1]((prevInputState) => ({
+                  amount: newTitle, // event is not accessible here as we use prevInputState (due to the behavior of closure in javascript) hence we declare this way using event above
+                  title: prevInputState.title, // This is because, like setState this wont merge the title automatically into state
+                }));
+              }}
             />
           </div>
           <div className="ingredient-form__actions">
