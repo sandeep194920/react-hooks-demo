@@ -7,6 +7,39 @@
    only a javascript object (and not any other type) can be assigned to the state, whereas anything including the object can 
    be assigned to useState like variables, arrays, objects and so on.
    useState() returns an array of two elements, the first one is the current state (or the updated state) and the second 
-   second element in the array is function that allows you to update your first element which is the actual state. 
-   We get errors if we do update any particular value out of many values in an object like how we do in setState. We'll see 
+   element in the array is function that allows you to update your first element which is the actual state. 
+   We get warning if we do update any particular value out of many values in an object like how we do in setState. We'll see 
    why this happens next.
+
+2. The way we use the state is correct (the first element of array is correct) but the way we update the state isn't correct, 
+   I mean the second element usage is not correct. There is an important difference between useState second element and the 
+   setState.  In setState, whichever part of the object we change will then be merged into existing state where as in useState 
+   that doesn't happen. I mean
+
+   setState                                         vs                      useState (update - 2nd element of array)
+
+   state = {                                                                    inputState = useState({ a:'A', b:'B', c:'C'  })
+       a:'A',
+       b:'B',
+       c:'C'
+   }
+
+   setState({a:'D'})                                                            inputState[1].a = 'D'
+
+   This will give us new state                                                  This would give us new state
+   { a:'D', b:'B', c:'C'  }                                                      {a:'D'}
+
+  * Here the existing state is merged with new state,                     *   Here existing state is not merged with new state,
+    old elements are retained.                                                and old elements would be lost.
+
+  * So basically it updates old state                                     *   So basically it replaces old state
+
+  This is what happens in the previous commit and we get the error. First we update the state for the title and that removes the 
+  number (amount) property because it replaces the state to have only the title hence we get the warning.
+
+  This is the warning we got in previous commit
+  index.js:1406 Warning: A component is changing a controlled input of type number to be uncontrolled. Input elements should not 
+  switch from controlled to uncontrolled (or vice versa). Decide between using a controlled or uncont
+
+  Even though this seems like a bad change there is a reason of flexibility here. So when updating state this way, we need to make
+  sure we retain all the properties by just writing the left out properties.
