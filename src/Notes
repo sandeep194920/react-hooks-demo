@@ -55,4 +55,13 @@
    and assign them to the elements mentioned of left hand side.
 
    const [inputState,setInputState ] = useState({......})
-   Now inputState is the actual state and the setInputState is the function to update the inputState.
+   Now inputState is the actual state and the setInputState is the function to update the inputState. 
+
+5. All good but did you realise the point mentioned in 2 and 3. Unlike state the useState doesnt merge the non updated elements 
+   with updated elements. So in point 3 I told we have to write other properties manually ourselves. Don't you think this is 
+   tedious and time consuming. Yes it is. So would it be better if we some how could update only what we want and retain others?
+   There is a way! Just use multiple useStates. Yes! that is possible. In this way you can update only the one you need and rest
+   will remain the same. So I mean, this time we don't need to have an object but a single variable in the useState and multiple 
+   such useStates for different variables.
+   So the conclusion is we better need to split our state into multiple useStates using single variables in each unless its very
+   necessary that we have some use case to use objects like what we did previously where multiple things change together.

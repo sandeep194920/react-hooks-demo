@@ -4,7 +4,8 @@ import Card from "../UI/Card";
 import "./IngredientForm.css";
 
 const IngredientForm = React.memo((props) => {
-  const [inputState, setInputState] = useState({ title: "", amount: "" });
+  const [enteredTitle, setEnteredTitle] = useState("");
+  const [enteredAmount, setEnteredAmount] = useState("");
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -20,14 +21,8 @@ const IngredientForm = React.memo((props) => {
             <input
               type="text"
               id="title"
-              value={inputState.title}
-              onChange={(event) => {
-                const newInput = event.target.value;
-                setInputState((prevInputState) => ({
-                  title: newInput, // event is not accessible here as we use prevInputState (due to the behavior of closure in javascript) hence we declare this way using event above
-                  amount: prevInputState.amount, // This is because, like setState this wont merge the amount automatically into state
-                }));
-              }}
+              value={enteredTitle}
+              onChange={(event) => setEnteredTitle(event.target.value)}
             />
           </div>
           <div className="form-control">
@@ -35,14 +30,8 @@ const IngredientForm = React.memo((props) => {
             <input
               type="number"
               id="amount"
-              value={inputState.amount}
-              onChange={(event) => {
-                const newTitle = event.target.value;
-                setInputState((prevInputState) => ({
-                  amount: newTitle, // event is not accessible here as we use prevInputState (due to the behavior of closure in javascript) hence we declare this way using event above
-                  title: prevInputState.title, // This is because, like setState this wont merge the title automatically into state
-                }));
-              }}
+              value={enteredAmount}
+              onChange={(event) => setEnteredAmount(event.target.value)}
             />
           </div>
           <div className="ingredient-form__actions">
