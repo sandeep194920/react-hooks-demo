@@ -92,4 +92,19 @@
    react hooks we can implement life cycle hooks differently. 
    So, let's begin with sending the ingredients to backend when clicked on Add Ingredient button using fetch api. There is a small
    difference between fetch and axios which I will mention using comments in the code.
-   
+
+10. Now that we are sending the data to the firebase on click of Add Ingredient button, we will now fetch those ingredients on the 
+    app reload. As I said in point 9, we used to do this in componentDidMount in class based. This is done by useEffect hook. 
+    This hook runs after the component gets rendered the first time AND for every render cycle (Meaning if something gets modified
+    and the component if rerenders again). Watch video. 434. useEffect() and Loading Data.
+    You might think we can normally load the ingredients using fetch or axios in the outer level (somewhere after the useState)
+    without using it inside useEffect. But the problem is, if we do that then the setInputState (which is setState) changes the state
+    and then the  Ingredients component rerenders and then this happens for infinite times creating infinite loop. Hence we do this 
+    in useEffect hook. useEffect is enough to replace all the life cycle hooks.
+
+    useEffect (without second arg) by default acts like componentDidUpdate. Which means if there is a state change within useEffect 
+    (without second arg) then it rerenders the component and then executes useEffect again there by executes the line which changes 
+    the state and so on. This creates an infinite loop as I said. So for our requirement of fetching ingredients, it should be done 
+    at once so the useEffect should be run only once. For this we need a second argument with an array of dependencies and if that 
+    dependencies change only then the component rerenders and useEffect will run again. Providing empty array as a second argument 
+    means that it has no dependencies and it runs only once.

@@ -1,10 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import IngredientList from "../Ingredients/IngredientList";
 import IngredientForm from "./IngredientForm";
 import Search from "./Search";
 
 function Ingredients() {
   const [userIngredients, setUserIngredients] = useState([]); // using array because the ingredients will be a list of ingredients
+
+  // fetching data from backend (We use to do this in componentDidMount)
+  useEffect(() => {
+    fetch("https://react-hooks-update-566c5.firebaseio.com/ingredients.json")
+      .then((response) => response.json())
+      .then((responseData) => {
+        const loadedIngredients = [];
+        for (const key in responseData) {
+          loadedIngredients.push({
+            id: key,
+            title: responseData[key].title,
+            amount: responseData[key].amount,
+          });
+        }
+        setUserIngredients(loadedIngredients);
+      });
+  }, []);
+  // empty array (2nd arg of useEffect) means we have no dependencies here on which the useEffect should run and
+  // hence the useEffect runs only once and thus works like CDM. Omitting the [] causes it work like CDU.
 
   const addIngredientHandler = (ingredient) => {
     // Let's send this data to backend when we click on Add Ingredient button. Let's use fetch (modern browser api) for this. It's similar to axios.
