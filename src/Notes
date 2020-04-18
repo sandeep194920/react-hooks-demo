@@ -83,3 +83,13 @@
    IngredientForm itself but the better place to handle this would be in ingredients because it has access to input and output.
 
 8. Let's now work with removing ingredients.
+
+9. Now it's time to test some react life cycle hooks with functional components. In class based we have componentDidMount, 
+   componentWillMount and so on which can't be used in functional component. So, how do we test this. Well we can send some 
+   data to backend (we used axios for this in BurgerBuilder, now lets use fetch api given by modern browser, not react). Once 
+   we send the data to firebase then we can retreive the data after the component reloads. To retreive the data after the component 
+   gets reloaded we used componentDidMount and hence we had to convert the functional component into class based. Now since we use
+   react hooks we can implement life cycle hooks differently. 
+   So, let's begin with sending the ingredients to backend when clicked on Add Ingredient button using fetch api. There is a small
+   difference between fetch and axios which I will mention using comments in the code.
+   
