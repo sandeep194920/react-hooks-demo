@@ -81,3 +81,5 @@
 
 7. Let's now take care of adding the ingredients upon the Add Ingredient button click in IngredientForm. This can be handled in 
    IngredientForm itself but the better place to handle this would be in ingredients because it has access to input and output.
+
+8. Let's now work with removing ingredients.
