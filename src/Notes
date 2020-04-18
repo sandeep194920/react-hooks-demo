@@ -117,3 +117,9 @@
 
       Here userIngredients is a dependency that means, we are telling useEffect to rerun only if userIngredients change otherwise it 
       shouldn't run second time.
+
+12. Let's now make the search bar work. If we type Apple in search only Apple should appear if that exists in loadedIngredients. Note
+    that we are doing a full search here in this project meaning if we type Apple completely then only the apple appears if it exists.
+    Recommended watch video. 436. More on useEffect and 437. what's useCallback() ?
+    In the Search component we need to filter the data as per enteredFilter value. Firebase provides the way to do this which we use 
+    in useEffect of Search to get the filtered ingredients (filtering by enteredFilter). Adjust rules in the firebase for this. 

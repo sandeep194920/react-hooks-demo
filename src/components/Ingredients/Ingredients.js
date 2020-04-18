@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import IngredientList from "../Ingredients/IngredientList";
 import IngredientForm from "./IngredientForm";
 import Search from "./Search";
@@ -6,28 +6,37 @@ import Search from "./Search";
 function Ingredients() {
   const [userIngredients, setUserIngredients] = useState([]); // using array because the ingredients will be a list of ingredients
 
-  // fetching data from backend (We use to do this in componentDidMount)
-  useEffect(() => {
-    fetch("https://react-hooks-update-566c5.firebaseio.com/ingredients.json")
-      .then((response) => response.json())
-      .then((responseData) => {
-        const loadedIngredients = [];
-        for (const key in responseData) {
-          loadedIngredients.push({
-            id: key,
-            title: responseData[key].title,
-            amount: responseData[key].amount,
-          });
-        }
-        setUserIngredients(loadedIngredients);
-      });
-  }, []);
+  // fetching data from backend (We use to do this in componentDidMount).
+  // I can comment the below useEffect because samething is called in Search component's useEffect which does the same and
+  // we are guaranteed to get the ingredients because of Search component being called here which is connected with the
+  // useEffect in Search
+
+  // useEffect(() => {
+  //   fetch("https://react-hooks-update-566c5.firebaseio.com/ingredients.json")
+  //     .then((response) => response.json())
+  //     .then((responseData) => {
+  //       const loadedIngredients = [];
+  //       for (const key in responseData) {
+  //         loadedIngredients.push({
+  //           id: key,
+  //           title: responseData[key].title,
+  //           amount: responseData[key].amount,
+  //         });
+  //       }
+  //       setUserIngredients(loadedIngredients);
+  //     });
+  // }, []);
+
   // empty array (2nd arg of useEffect) means we have no dependencies here on which the useEffect should run and
   // hence the useEffect runs only once and thus works like CDM. Omitting the [] causes it work like CDU.
 
-  useEffect(() => {
-    console.log("The user ingredients");
-  });
+  // This comes from Search component and the filtered ingredients are set as userIngredients here
+  const filteredIngredientsHandler = useCallback((filteredIngredients) => {
+    setUserIngredients(filteredIngredients);
+  }, []); // In the Search, the useEffect depends on this and when this setUserIngredients here
+  // executes the useEffect in Search executes creating an infinite loop. Hence we can use
+  // useCallback and specify a dependency similar to useEffect. We have no dependency here execpt setUserIngredients
+  // which is given by react by default, hence no need to mention that as a dependency here.
 
   const addIngredientHandler = (ingredient) => {
     // Let's send this data to backend when we click on Add Ingredient button. Let's use fetch (modern browser api) for this. It's similar to axios.
@@ -59,7 +68,7 @@ function Ingredients() {
       <IngredientForm onAddIngredient={addIngredientHandler} />
 
       <section>
-        <Search />
+        <Search onLoadIngredients={filteredIngredientsHandler} />
         <IngredientList
           ingredients={userIngredients}
           onRemoveItem={removeIngredientHandler}
