@@ -108,3 +108,12 @@
     at once so the useEffect should be run only once. For this we need a second argument with an array of dependencies and if that 
     dependencies change only then the component rerenders and useEffect will run again. Providing empty array as a second argument 
     means that it has no dependencies and it runs only once.
+
+11. What do I mean by dependencies of 2nd argument ? Well take a look here
+
+      useEffect (()={
+         console.log("The ingredients are ",userIngredients);
+      },[userIngredients])
+
+      Here userIngredients is a dependency that means, we are telling useEffect to rerun only if userIngredients change otherwise it 
+      shouldn't run second time.

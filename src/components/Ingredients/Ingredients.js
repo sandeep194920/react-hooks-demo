@@ -25,6 +25,10 @@ function Ingredients() {
   // empty array (2nd arg of useEffect) means we have no dependencies here on which the useEffect should run and
   // hence the useEffect runs only once and thus works like CDM. Omitting the [] causes it work like CDU.
 
+  useEffect(() => {
+    console.log("The user ingredients");
+  });
+
   const addIngredientHandler = (ingredient) => {
     // Let's send this data to backend when we click on Add Ingredient button. Let's use fetch (modern browser api) for this. It's similar to axios.
     // Note: By default the fetch uses GET. We need POST here to store data in backend
