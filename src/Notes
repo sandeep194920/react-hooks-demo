@@ -123,3 +123,34 @@
     Recommended watch video. 436. More on useEffect and 437. what's useCallback() ?
     In the Search component we need to filter the data as per enteredFilter value. Firebase provides the way to do this which we use 
     in useEffect of Search to get the filtered ingredients (filtering by enteredFilter). Adjust rules in the firebase for this. 
+
+13. Getting instant results from backend is good when we type each keystroke to see if there is a matching ingredient, but don't you 
+    think this is too much overhead. We can reduce a bit using a small trick, i.e. we would like to send the keys and fetch the results
+    only if we pause on typing. I mean if we type Apples and then give some pause (in milliseconds - 500 would be better) then after 
+    this time it actually should reach the backend to fetch the results for the entered keys until the pause. Let's do this with 
+    setTimeout function. 
+    Now there is a doubt, the enteredFilter mentioned inside the setTimeout, is that the enteredFilter before the time started or 
+    after the 500 ms? Before the time started it was noting but after 500ms the enteredFilter is Apples, so the doubt is which one 
+    is the enteredFilter inside the setTimeout?
+    The answer to this is - before the timer started whatever was enteredFilter that is the one. The idea is to compare the enteredFilter
+    typed before 500ms and after 500ms and if there is no change then we go and get the results from backend for that letters.
+    So, as I told the enteredFilter is the old one before the timer began which needs to be compared with the new one. How do we get 
+    the current enteredFilter inside the setTimeout? We do this using useRef. Please watch video 438. Working with Refs and useRefs to 
+    get the idea.
+    ref of the input (responsible to give the letters in search box) provides the latest letters (you can treat this as current enteredFilter
+    after the timer has completed). You can compare the difference between enteredFilter (before timer) and ref (after the timer) and 
+    if there is no change that means user paused by typing something and wants the result for that so after the timer we send the 
+    http request to backend to get the result for the changed elements.
+      
+      setTimeout(()=>{},500); ---> The function (before ,) executes after 500ms
+
+    Also, if we do this, then after a pause of 500ms we get the results which is good. But what if we starting typing again after the 
+    pause? This calls the useEffect again and the new timer gets created again. Though you dont see the difference in working of the 
+    app, this creates a memory overhead because of stacking up of old timers. We need to clear old timers. 
+
+    How to clear timers ? 
+    Note about setTimeout function and useEffect here.
+    * setTimeout - setTimeout can be assigned to a const which can be used later. This is necessary to clear the previous setTimeout.
+    * useEffect - useEffect can return a function and inside that function we clear out the previous timer mentioned in above point. 
+      This happens when the useEffect is called the second time. But what if useEffect is called only once with [] dependencies. In 
+      this case the return function of setTimeout is called during unmounting of component and we dont have to worry about this.
