@@ -58,9 +58,19 @@ function Ingredients() {
   };
 
   const removeIngredientHandler = (ingredientId) => {
-    setUserIngredients((prevIngredients) =>
-      prevIngredients.filter((ingredient) => ingredient.id !== ingredientId)
-    );
+    // delete ingredient from firebase by searching ingredient with its id. Note that we can use string interpolation (by using `)
+    // in the url and this is required when we specify something related to firebase in the url like below
+    fetch(
+      `https://react-hooks-update-566c5.firebaseio.com/ingredients/${ingredientId}.json`,
+      {
+        method: "DELETE",
+      }
+    ).then((response) => {
+      // we dont care about the response here but when we get the response after getting deleted from the firebase, we remove it from UI as well using the code below
+      setUserIngredients((prevIngredients) =>
+        prevIngredients.filter((ingredient) => ingredient.id !== ingredientId)
+      );
+    });
   };
 
   return (

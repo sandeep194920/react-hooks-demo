@@ -154,3 +154,6 @@
     * useEffect - useEffect can return a function and inside that function we clear out the previous timer mentioned in above point. 
       This happens when the useEffect is called the second time. But what if useEffect is called only once with [] dependencies. In 
       this case the return function of setTimeout is called during unmounting of component and we dont have to worry about this.
+
+14. removeIngredientHandler removes the clicked ingredient from the UI but doesnt actually remove it from firebase. Let's now work 
+    on removing from firebase as well when we click on any ingredient.
