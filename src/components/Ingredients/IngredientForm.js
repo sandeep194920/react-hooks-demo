@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import Loading from "../UI/LoadingIndicator";
 import Card from "../UI/Card";
 import "./IngredientForm.css";
 
@@ -36,6 +36,9 @@ const IngredientForm = React.memo((props) => {
           </div>
           <div className="ingredient-form__actions">
             <button type="submit">Add Ingredient</button>
+            {/* {props.loading ? <Loading/> : null} */}
+            {/* The below line (shortcut of above line) is similar to the above line but the difference is the below line has no else part. The below line says If props.loading then fetch <Loading/> */}
+            {props.loading && <Loading />}
           </div>
         </form>
       </Card>

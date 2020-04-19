@@ -157,3 +157,25 @@
 
 14. removeIngredientHandler removes the clicked ingredient from the UI but doesnt actually remove it from firebase. Let's now work 
     on removing from firebase as well when we click on any ingredient.
+
+15. While fetching or deleting the ingredient from firebase it would be good if we can show some spinner. Let's also handle error 
+    in the catch block if something goes wrong.
+    State updates are batched if they are in same synchronous code block. What I mean is let's say you have a block like below
+
+    const xy=() =>{
+
+       setName('Manu');
+       setAge('30');
+    }
+    Generally we think each setSomething should run a render cycle. But remember if the setSomething1 followed by setSomething2 and 
+    so on are in the same synchronous block (that is important - sync block and not async block), then only one render cycle takes 
+    place. To understand this see below,
+
+    const xy=() =>{
+       console.log(name); //prints Manu for example
+       setName('Max');
+       console.log(name); // what should this print Max or Manu
+    }
+   You could think that accessing the name state after setName('Max'); should yield the new value (e.g. 'Max') but this is NOT the 
+   case. Keep in mind, that the new state value is only available in the next component render cycle 
+   (which gets scheduled by calling setName()).
