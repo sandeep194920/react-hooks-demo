@@ -179,3 +179,11 @@
    You could think that accessing the name state after setName('Max'); should yield the new value (e.g. 'Max') but this is NOT the 
    case. Keep in mind, that the new state value is only available in the next component render cycle 
    (which gets scheduled by calling setName()).
+
+16. Let's see what is useReducer() for. Before we start note that useReducer has nothing to do with redux library, but the concept
+    of type and action as used in reducer remains same. Now what is useReducer() ?
+    useReducer is an alternative way to manage the state (alternative way to useState). useReducer functionality is similar to 
+    the code we write in reducer like we write different cases and dispatch the actions. 
+    With functional based components we can do this with useReducer. I've mentioned what is initial state and everything in the 
+    Ingredients.js component where we use useReducer as an alternative to the useState of userIngredients. Refer video. 443. 
+    Understanding useReducers. 

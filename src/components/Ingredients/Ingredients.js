@@ -1,11 +1,35 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useReducer } from "react";
 import IngredientList from "../Ingredients/IngredientList";
 import IngredientForm from "./IngredientForm";
 import ErrorModal from "../UI/ErrorModal";
 import Search from "./Search";
 
+// Note that this is similar to what we did in redux but the useReducer has nothing to do with redux library.
+// currentIngredients (first argument) is the one which is passed as a second argument in the useReducer function below.
+// Initially we are passing []. dispatch is the one which acts as setState and when the action is dispatched the reducer
+// state changes (when any of the case returns something which changes the state - currentIngredients) hence currentIngredients
+// change becuase of which the component re-renders
+const ingredientReducer = (currentIngredients, action) => {
+  switch (action.type) {
+    case "SET":
+      return action.ingredients; // This ingredients is an array and this when returned replaces the state - currentIngredients thus becomes the updated state and the component re-renders due to this state change
+    case "ADD":
+      return [...currentIngredients, action.ingredient]; // This is same as using setUserIngredients and using previous ingredients to fetch the previous state and update that as we did in addIngredientHandler
+    case "DELETE":
+      return currentIngredients.filter(
+        (ingredient) => ingredient.id !== action.id
+      );
+    default:
+      throw new Error(
+        "This should not be reached as we are handling everything already"
+      );
+  }
+};
+
 function Ingredients() {
-  const [userIngredients, setUserIngredients] = useState([]); // using array because the ingredients will be a list of ingredients
+  const [userIngredients, dispatch] = useReducer(ingredientReducer, []); // In useReducer, the second arg [] is the currentIngredients (intital state of ingredientReducer). The dispatch is the one which causes the state to change
+  // Below line is replaced by above to use useReducer()
+  // const [userIngredients, setUserIngredients] = useState([]); // using array because the ingredients will be a list of ingredients
   const [isLoading, setIsLoading] = useState(false); // used to show loading spinner
   const [error, setError] = useState();
 
@@ -35,7 +59,8 @@ function Ingredients() {
 
   // This comes from Search component and the filtered ingredients are set as userIngredients here
   const filteredIngredientsHandler = useCallback((filteredIngredients) => {
-    setUserIngredients(filteredIngredients);
+    // setUserIngredients(filteredIngredients); // code used before useReducer was introduced
+    dispatch({ type: "SET", ingredients: filteredIngredients });
   }, []); // In the Search, the useEffect depends on this and when this setUserIngredients here
   // executes the useEffect in Search executes creating an infinite loop. Hence we can use
   // useCallback and specify a dependency similar to useEffect. We have no dependency here execpt setUserIngredients
@@ -56,10 +81,15 @@ function Ingredients() {
         return response.json(); // response itself is a complex object and we are interested in the body part of it. So once we get this we can get the body as responseData. These two steps will be combined into one in axios.
       })
       .then((responseData) => {
-        setUserIngredients((prevIngredients) => [
-          ...prevIngredients,
-          { id: responseData.name, ...ingredient }, //name is the unique id in the firebase. This might differ from one backend to another
-        ]);
+        // setUserIngredients((prevIngredients) => [
+        //   ...prevIngredients,
+        //   { id: responseData.name, ...ingredient }, //name is the unique id in the firebase. This might differ from one backend to another
+        // ]);
+        // Above commented code used before useReducer
+        dispatch({
+          type: "ADD",
+          ingredient: { id: responseData.name, ...ingredient },
+        });
       })
       .catch((error) => {
         // These two below will have only one render cycle and not two because react batches these two updates into one to avoid
@@ -83,9 +113,11 @@ function Ingredients() {
       setIsLoading(false);
 
       // we dont care about the response here but when we get the response after getting deleted from the firebase, we remove it from UI as well using the code below
-      setUserIngredients((prevIngredients) =>
-        prevIngredients.filter((ingredient) => ingredient.id !== ingredientId)
-      );
+      // setUserIngredients((prevIngredients) =>
+      //   prevIngredients.filter((ingredient) => ingredient.id !== ingredientId)
+      // );
+      // Above commented code used before useReducer
+      dispatch({ type: "DELETE", id: ingredientId });
     });
   };
 
