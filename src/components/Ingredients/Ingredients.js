@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useReducer } from "react";
+import React, { useCallback, useReducer } from "react";
 import IngredientList from "../Ingredients/IngredientList";
 import IngredientForm from "./IngredientForm";
 import ErrorModal from "../UI/ErrorModal";
@@ -26,12 +26,34 @@ const ingredientReducer = (currentIngredients, action) => {
   }
 };
 
+const httpReducer = (currHttpState, action) => {
+  switch (action.type) {
+    case "SEND": // sending http request in addIngredientHandler
+      return { loading: true, error: null };
+    case "RESPONSE":
+      return { ...currHttpState, loading: false };
+    case "ERROR":
+      return { loading: false, error: action.error };
+    case "CLEAR":
+      return { ...currHttpState, error: null };
+    default:
+      throw new Error(
+        "This should not be reached as we are handling everything already"
+      );
+  }
+};
+
 function Ingredients() {
   const [userIngredients, dispatch] = useReducer(ingredientReducer, []); // In useReducer, the second arg [] is the currentIngredients (intital state of ingredientReducer). The dispatch is the one which causes the state to change
+  const [httpstate, dispatchHttp] = useReducer(httpReducer, {
+    loading: false,
+    error: null,
+  });
   // Below line is replaced by above to use useReducer()
   // const [userIngredients, setUserIngredients] = useState([]); // using array because the ingredients will be a list of ingredients
-  const [isLoading, setIsLoading] = useState(false); // used to show loading spinner
-  const [error, setError] = useState();
+  // These two are combined into one httpReducer
+  // const [isLoading, setIsLoading] = useState(false); // used to show loading spinner
+  // const [error, setError] = useState();
 
   // fetching data from backend (We use to do this in componentDidMount).
   // I can comment the below useEffect because samething is called in Search component's useEffect which does the same and
@@ -67,7 +89,8 @@ function Ingredients() {
   // which is given by react by default, hence no need to mention that as a dependency here.
 
   const addIngredientHandler = (ingredient) => {
-    setIsLoading(true);
+    // setIsLoading(true); // used before useReducer was used
+    dispatchHttp({ type: "SEND" });
 
     // Let's send this data to backend when we click on Add Ingredient button. Let's use fetch (modern browser api) for this. It's similar to axios.
     // Note: By default the fetch uses GET. We need POST here to store data in backend
@@ -77,7 +100,9 @@ function Ingredients() {
       headers: { "Content-Type": "application/json" }, // this is expected by firebase and is done automatically in axios
     })
       .then((response) => {
-        setIsLoading(false);
+        // setIsLoading(false); // used before useReducer
+        dispatchHttp({ type: "RESPONSE" });
+
         return response.json(); // response itself is a complex object and we are interested in the body part of it. So once we get this we can get the body as responseData. These two steps will be combined into one in axios.
       })
       .then((responseData) => {
@@ -94,43 +119,53 @@ function Ingredients() {
       .catch((error) => {
         // These two below will have only one render cycle and not two because react batches these two updates into one to avoid
         // unnecessary render cycles
-        setError("Something went wrong!");
-        setIsLoading(false);
+        // setError("Something went wrong!"); // used before useReducer
+        // setIsLoading(false); // used before useReducer
+        dispatchHttp({ type: "ERROR", error: "Something went wrong!" }); // combining setError and setIsLoading in this line. This is the advantage of useReducer
       });
   };
 
   const removeIngredientHandler = (ingredientId) => {
-    setIsLoading(true);
+    // setIsLoading(true); //used before useReducer
+    dispatchHttp({ type: "SEND" });
 
     // delete ingredient from firebase by searching ingredient with its id. Note that we can use string interpolation (by using `)
     // in the url and this is required when we specify something related to firebase in the url like below
     fetch(
-      `https://react-hooks-update-566c5.firebaseio.com/ingredients/${ingredientId}.json`,
+      `https://react-hooks-update-566c5.firebaseio.com/ingredients/${ingredientId}.jsn`,
       {
         method: "DELETE",
       }
-    ).then((response) => {
-      setIsLoading(false);
+    )
+      .then((response) => {
+        // setIsLoading(false); used before useReducer
+        dispatchHttp({ type: "RESPONSE" });
 
-      // we dont care about the response here but when we get the response after getting deleted from the firebase, we remove it from UI as well using the code below
-      // setUserIngredients((prevIngredients) =>
-      //   prevIngredients.filter((ingredient) => ingredient.id !== ingredientId)
-      // );
-      // Above commented code used before useReducer
-      dispatch({ type: "DELETE", id: ingredientId });
-    });
+        // we dont care about the response here but when we get the response after getting deleted from the firebase, we remove it from UI as well using the code below
+        // setUserIngredients((prevIngredients) =>
+        //   prevIngredients.filter((ingredient) => ingredient.id !== ingredientId)
+        // );
+        // Above commented code used before useReducer
+        dispatch({ type: "DELETE", id: ingredientId });
+      })
+      .catch((error) =>
+        dispatchHttp({ type: "ERROR", error: "Something went wrong!" })
+      );
   };
 
   const clearError = () => {
-    setError(null);
+    // setError(null); // used before useReducer
+    dispatchHttp({ type: "CLEAR" });
   };
 
   return (
     <div className="App">
-      {error && <ErrorModal onClose={clearError}>{error}</ErrorModal>}
+      {httpstate.error && (
+        <ErrorModal onClose={clearError}>{httpstate.error}</ErrorModal>
+      )}
       <IngredientForm
         onAddIngredient={addIngredientHandler}
-        loading={isLoading}
+        loading={httpstate.loading}
       />
 
       <section>

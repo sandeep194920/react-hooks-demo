@@ -187,3 +187,7 @@
     With functional based components we can do this with useReducer. I've mentioned what is initial state and everything in the 
     Ingredients.js component where we use useReducer as an alternative to the useState of userIngredients. Refer video. 443. 
     Understanding useReducers. 
+
+17. Let's do this for error and sending http request useState. Let's now convert them to use useReducer. Both of these have two 
+    separate useState but we can combine them into single useReducer because both are interconnected. That is the power of 
+    using useReducer.
