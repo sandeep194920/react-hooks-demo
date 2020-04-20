@@ -191,3 +191,36 @@
 17. Let's do this for error and sending http request useState. Let's now convert them to use useReducer. Both of these have two 
     separate useState but we can combine them into single useReducer because both are interconnected. That is the power of 
     using useReducer.
+
+18. Let's now work with context api (useContext). To understand this lets discuss what is props chain. Let's say I have the
+    components A, B and C.
+
+             A                                        B                                      C        
+    Where the login handler is            B doesn't need the login prop           C has to get the login info to show something
+    and the login state is changed        but since C needs, this just forwards          
+    here                                  to C 
+
+    Now imagine there might be some 5 to 6 components between A and C where none of the components need this login info except 
+    for C. In this case all the components still need to get the login info from A just to pass it to C. In this case there is 
+    a useful method what context featur gives.
+
+    Context is basically a javascript object/array/variable that is available globally. Actually we can decide where that needs
+    to be available (in whichever component you like) and doesn't require to pass as props. We create a separate file for this 
+    and write the code for the context. Once the context is created, if we want to use it in any component then we need to wrap 
+    that parts of component where we need to use it with a .Provider on the component A (this is the component that has the value), 
+    and we use .Consumer in the destination component C where we use that. Here in the consumer the jsx is rendered inside a function 
+    and not directly as jsx, I mean like below.
+    
+     <AuthContext.Consumer>
+     {
+        (context)=>{
+            jsx code which uses the context instead of props
+        }
+     }
+     </AuthAuthContext.Consumer>
+
+   This is the case if we want to access it within jsx. What if we need to access it within a function like componentDidMount? 
+   We can't access  <AuthContext.Consumer> but we have static method contextType (for classbased) and useContext for hooks.
+    
+   Refer to the video 113. Using the Context api and its next video 114. contextType and useContext, also video 445. Working 
+   with useContext() for better understanding if not clear.
