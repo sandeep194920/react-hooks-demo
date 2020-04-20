@@ -224,3 +224,26 @@
     
    Refer to the video 113. Using the Context api and its next video 114. contextType and useContext, also video 445. Working 
    with useContext() for better understanding if not clear.
+
+19. Let's focus on performance optimization. useMemo() hook helps us doing that. Consider Ingredients component. Whenever the 
+    Ingredients component renders the functions in there like addIngredientHandler(), removeIngredientHandler() gets created. 
+    These inturn are passed as props to the IngredientForm and IngredientList respectively. There by these components are also 
+    rendered again (note that these components are rendered even when react memo is used, because everytime the 
+    addIngredientHandler is created and the react memo inside the IngredientForm treats it as a new one hence the react memo 
+    allows IngredientForm to re-render. If we use useCallback on addIngredientHandler and removeIngredientHandler then the 
+    useCallback will not let the addIngredientHandler and removeIngredientHandler recreate and hence the react memo avoids 
+    the old one to be stopped). 
+    This leads to poor performance (though it is not a big deal for such a small app but the concept 
+    remains same for the big apps). We can use useMemo() hook like how we use useCallback to wrap the addIngredientHandler and 
+    removeIngredientHandler kind of components. You can check this by adding a console.log in IngredientForm.
+    We can use useMemo on the particular value or a function (useCallback is used on functions) if we dont want to use react memo in 
+    the child component. 
+    In our example we are using both the approaches of using useCallback on addIngredientHandler thus using react memo in child 
+    component, and also the second approach is used where the useMemo is used on the <IngredientList/> in Ingredients (parent) and 
+    no react memo is used in the child component. 
+
+    So overall the idea of react memo, useCallback, and useMemo is to avoid unnecessary re-render cycles. We need to think
+    if the component really needs to re-render or not and implement these functionalities accordingly.
+
+    useCallback is a hook where the FUNCTION is not recreated if the dependency don't change and the useMemo is a hook where a VALUE 
+    is not recreate dependency don't change.

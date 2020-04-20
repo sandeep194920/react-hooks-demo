@@ -1,4 +1,4 @@
-import React, { useCallback, useReducer } from "react";
+import React, { useCallback, useReducer, useMemo } from "react";
 import IngredientList from "../Ingredients/IngredientList";
 import IngredientForm from "./IngredientForm";
 import ErrorModal from "../UI/ErrorModal";
@@ -88,7 +88,7 @@ function Ingredients() {
   // useCallback and specify a dependency similar to useEffect. We have no dependency here execpt setUserIngredients
   // which is given by react by default, hence no need to mention that as a dependency here.
 
-  const addIngredientHandler = (ingredient) => {
+  const addIngredientHandler = useCallback((ingredient) => {
     // setIsLoading(true); // used before useReducer was used
     dispatchHttp({ type: "SEND" });
 
@@ -123,7 +123,7 @@ function Ingredients() {
         // setIsLoading(false); // used before useReducer
         dispatchHttp({ type: "ERROR", error: "Something went wrong!" }); // combining setError and setIsLoading in this line. This is the advantage of useReducer
       });
-  };
+  }, []);
 
   const removeIngredientHandler = (ingredientId) => {
     // setIsLoading(true); //used before useReducer
@@ -132,7 +132,7 @@ function Ingredients() {
     // delete ingredient from firebase by searching ingredient with its id. Note that we can use string interpolation (by using `)
     // in the url and this is required when we specify something related to firebase in the url like below
     fetch(
-      `https://react-hooks-update-566c5.firebaseio.com/ingredients/${ingredientId}.jsn`,
+      `https://react-hooks-update-566c5.firebaseio.com/ingredients/${ingredientId}.json`,
       {
         method: "DELETE",
       }
@@ -153,11 +153,19 @@ function Ingredients() {
       );
   };
 
-  const clearError = () => {
+  const clearError = useCallback(() => {
     // setError(null); // used before useReducer
     dispatchHttp({ type: "CLEAR" });
-  };
+  }, []);
 
+  const ingredientList = useMemo(() => {
+    return (
+      <IngredientList
+        ingredients={userIngredients}
+        onRemoveItem={removeIngredientHandler}
+      />
+    );
+  }, [userIngredients]); // if userIngredients change then we need to re-render this component, else no need
   return (
     <div className="App">
       {httpstate.error && (
@@ -170,10 +178,7 @@ function Ingredients() {
 
       <section>
         <Search onLoadIngredients={filteredIngredientsHandler} />
-        <IngredientList
-          ingredients={userIngredients}
-          onRemoveItem={removeIngredientHandler}
-        />
+        {ingredientList}
       </section>
     </div>
   );
