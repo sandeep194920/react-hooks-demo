@@ -246,4 +246,4 @@
     if the component really needs to re-render or not and implement these functionalities accordingly.
 
     useCallback is a hook where the FUNCTION is not recreated if the dependency don't change and the useMemo is a hook where a VALUE 
-    is not recreate dependency don't change.
+    is not recreated if dependency don't change.
