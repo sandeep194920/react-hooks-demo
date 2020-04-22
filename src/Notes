@@ -247,3 +247,12 @@
 
     useCallback is a hook where the FUNCTION is not recreated if the dependency don't change and the useMemo is a hook where a VALUE 
     is not recreated if dependency don't change.
+
+20. What are custom hooks ? Custom hooks are like normal functions where we extract some repeatative code and put in a function. 
+    The difference between function and custom hook is that, if the dom re-renders the customhook we defined also re-renders,
+    and same applies for function but the difference is if the custom hook has some code which needs to update the state it does
+    it where as the function can't do that. Please refer youtube video with great explanation about custom hook here.
+    https://www.youtube.com/watch?v=4yp6T-hF5ZY.
+    Simply put, the custom hook runs with every re-render cycle but a normal function doesnt run with every re-render cycle.
+    In our project we could implement custom hooks as per the video 447. Getting Started with Custom hooks but am not doing it 
+    here. 
