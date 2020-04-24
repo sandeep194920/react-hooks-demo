@@ -9,14 +9,16 @@ ReactDOM.render(
   <AuthContextProvider>
     <p
       style={{
-        textAlign: "center",
         color: "#fff",
         border: "1px solid #ff2058",
         background: "#ff2058",
-        marginLeft: "35%",
-        display: "inline-block",
+        display: "block",
         padding: "2%",
         borderRadius: "0%",
+        margin: "auto",
+        width: "30%",
+        textAlign: "center",
+        fontWeight: "bold",
       }}
     >
       You can delete an item by clicking on it!
